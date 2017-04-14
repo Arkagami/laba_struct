@@ -59,16 +59,36 @@ void del(Pbd &Head, int id) {
 	putID(Head);
 }
 
-int intLi(char *s) {
-	char *ss = s;
+int StrToInt(char *s) {
+	int i = 0, ii = 0;
+	while (*s) {
+		ii = i;
+		if (*s == '0') { i = 10 * i + 0; }
+		if (*s == '1') { i = 10 * i + 1; }
+		if (*s == '2') { i = 10 * i + 2; }
+		if (*s == '3') { i = 10 * i + 3; }
+		if (*s == '4') { i = 10 * i + 4; }
+		if (*s == '5') { i = 10 * i + 5; }
+		if (*s == '6') { i = 10 * i + 6; }
+		if (*s == '7') { i = 10 * i + 7; }
+		if (*s == '8') { i = 10 * i + 8; }
+		if (*s == '9') { i = 10 * i + 9; }
+		s++;
+		if (ii > i) return -1;
+	}
+	return i;
+}
+
+int intLi(char s[1000]) {
+	int w = 0;
 	char chisla[11] = "0123456789";
-	while (*ss) {
+	while (s[w]) {
 		for (int i = 0;i < 10;i++) {
-			if (*ss == chisla[i]) goto yes;
+			if (s[w] == chisla[i]) goto yes;
 		}
 		return 0;
 	yes:
-		ss++;
+		w++;
 	}
 	return 1;
 }
@@ -127,18 +147,18 @@ int main()
 		q = q->next;
 	}
 
-	int com = -1;
-	char *s;
+	int com = -1, //Номер команды
+		kolKom=0; //Количество команд управления
+	char s[1000];
 	printf("\nВведите команду:");
-	scanf("%s", &s);
-	printf("%s\n", *s);
-	while (intLi(s) != 1) {
+	gets_s(s, 999);
+	printf("%s\n", s);
+	while ((intLi(s) == 0) || (StrToInt(s)==-1)) {
+	repeat:;
 		printf("Вы ввели неверное число или строку. Повторите ввод:");
-		scanf(" %s", &s);
-		s--;
-		*s = '\0';
+		gets_s(s, 999);
 	}
-	printf("%s\n", *s);
+	if (StrToInt(s) > kolKom-1) goto repeat;
 
 
 
