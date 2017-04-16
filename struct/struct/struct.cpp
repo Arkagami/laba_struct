@@ -6,18 +6,26 @@
 int ID=-1; //ID последнего элемента базы
 
 
-struct bd {
+struct arsenal {
 	int id;
-	char *name;
-	int count;
-	bd *next;
+	char *name;			// Название вооружения
+	short number;		// Номер
+	int damage;			// Урон
+	int hp;				// Здоровье
+	float runtime;		// Время работы (дробные часы)
+	long long cost;		// Стоимость
+	short shock;		// Время шока
+	char *owner;		// Имя владельца (ВЛК Диверсант, если клубный)
+
+
+	arsenal *next;
 
 	void myprint()
 	{
-			printf("id%d: %s - %d\n", id,  name, count);
+			//printf("id%d: %s - %d\n", id,  name, number);
 	}
 };
-typedef bd *Pbd;
+typedef arsenal *Pbd;
 
 void putID(Pbd &Head) {
 	Pbd q = Head;
@@ -99,31 +107,31 @@ int main()
 	setlocale(LC_ALL, "RUS");
 	/*
 	Pbd CreateBD(char *nam, int COUNT) {
-		Pbd try = new bd;
+		Pbd try = new arsenal;
 		try->count = COUNT;
 		tr->next = NULL;
 		return try;
 	}*/
 
-	Pbd one = new bd;
+	Pbd one = new arsenal;
 	Pbd baza = NULL;
 	one->name = "Mixno";
 	one->count = 12;
 	add(baza, one);
 	one->next = NULL;
-	one = new bd;
+	one = new arsenal;
 	one->name = "MixNo";
 	one->count = 14;
 	one->next = NULL;
 	add(baza, one);
-	one = new bd;
+	one = new arsenal;
 	one->name = "MixNoooooooooo";
 	one->count = 229878;
 	one->next = NULL;
 	add(baza, one);
 
 
-	one = new bd;
+	one = new arsenal;
 	one->name = "Hui";
 	one->count = 1204;
 	one->next = NULL;
