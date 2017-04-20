@@ -20,9 +20,10 @@ struct arsenal {
 
 	arsenal *next;
 
-	void myprint()
+
+	void out()
 	{
-			//printf("id%d: %s - %d\n", id,  name, number);
+		printf("\n%d\n%s\n%d\n%d\n%d\n%f\n%lld\n%d\n%s\nend.\n-------------------------------\n", id, name, number, damage, hp, runtime, cost, shock, owner);
 	}
 };
 typedef arsenal *Pbd;
@@ -67,8 +68,9 @@ void del(Pbd &Head, int id) {
 	putID(Head);
 }
 
-int StrToInt(char *s) {
+int StrToInt(char *ss) {
 	int i = 0, ii = 0;
+	char *s = ss;
 	while (*s) {
 		ii = i;
 		if (*s == '0') { i = 10 * i + 0; }
@@ -101,6 +103,26 @@ int intLi(char s[1000]) {
 	return 1;
 }
 
+void save(Pbd &base) {
+	FILE *f = fopen("database.txt", "w");
+	Pbd baza = base;
+	while (baza != NULL) {
+		fwrite(&baza, sizeof(struct arsenal), 1, f);
+		baza = baza->next;
+	}
+	fclose(f);
+}
+
+void scan(Pbd &base) {
+	FILE *f = fopen("database.txt", "r");
+	Pbd baza = base;
+	while (fread(&baza, sizeof(struct arsenal), 1, f) == 1) {
+		baza->out();
+		baza = baza->next;
+	}
+	baza = NULL;
+	fclose(f);
+}
 
 int main()
 {
@@ -108,66 +130,57 @@ int main()
 	/*
 	Pbd CreateBD(char *nam, int COUNT) {
 		Pbd try = new arsenal;
-		try->count = COUNT;
+		try->number = COUNT;
 		tr->next = NULL;
 		return try;
 	}*/
 
 	Pbd one = new arsenal;
 	Pbd baza = NULL;
+	Pbd bazaa = NULL;
 	one->name = "Mixno";
-	one->count = 12;
+	one->number = 12;
 	add(baza, one);
 	one->next = NULL;
 	one = new arsenal;
 	one->name = "MixNo";
-	one->count = 14;
+	one->number = 14;
 	one->next = NULL;
 	add(baza, one);
 	one = new arsenal;
 	one->name = "MixNoooooooooo";
-	one->count = 229878;
+	one->number = 229878;
 	one->next = NULL;
 	add(baza, one);
 
 
 	one = new arsenal;
 	one->name = "Hui";
-	one->count = 1204;
+	one->number = 1204;
 	one->next = NULL;
 	AddFirst(baza, one);
 
-
-
-	Pbd q = baza;
-	while (q!=NULL) {
-		q->myprint();
-		q = q->next;
-	}
-
-	printf("---------------------------------------------\n");
-
-	del(baza, 1);
-
-	q = baza;
-	while (q != NULL) {
-		q->myprint();
-		q = q->next;
-	}
-
 	int com = -1, //Номер команды
-		kolKom=0; //Количество команд управления
+		u = -20,  //Just needed
+		kolKom=2; //Количество команд управления
 	char s[1000];
-	printf("\nВведите команду:");
-	gets_s(s, 999);
-	printf("%s\n", s);
-	while ((intLi(s) == 0) || (StrToInt(s)==-1)) {
-	repeat:;
-		printf("Вы ввели неверное число или строку. Повторите ввод:");
+	while (1) {
+		com = -1;
+		printf("Введите команду:\n");
+		printf("0 - Сохранить в файл\n");
+		printf("1 - Загрузить из файла\n");
 		gets_s(s, 999);
+		u = StrToInt(s);
+		while ((intLi(s) == 0) || (u == -1)) {
+		repeat:;
+			printf("Вы ввели неверное число или строку. Повторите ввод:");
+			gets_s(s, 999);
+			u = StrToInt(s);
+		}
+		if (u > kolKom - 1) goto repeat;
+		if (u == 0) save(baza);
+		if (u == 1) scan(bazaa);
 	}
-	if (StrToInt(s) > kolKom-1) goto repeat;
-
 
 
 	return 0;
