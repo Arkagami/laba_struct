@@ -6,16 +6,20 @@
 int ID=-1; //ID последнего элемента базы
 
 
+enum colors { blue, red, green, yellow };
+char *coloris[] {"Синий", "Красный" , "Зеленый" , "Желтый" };
+
 struct arsenal {
-	int id;
-	char *name;			// Название вооружения
-	short number;		// Номер
-	int damage;			// Урон
-	int hp;				// Здоровье
-	float runtime;		// Время работы (дробные часы)
-	long long cost;		// Стоимость
-	short shock;		// Время шока
-	char *owner;		// Имя владельца (ВЛК Диверсант, если клубный)
+	int id = -1;					// ID
+	char *name = " ";				// Название вооружения
+	short number = -1;				// Номер
+	colors collor = blue;			// Цвет 
+	int damage = -1;				// Урон
+	int hp = -1;					// Здоровье
+	float runtime = -1.0;			// Время работы (дробные часы)
+	long long cost = -1;			// Стоимость (в рублях)
+	short shock = -1;				// Время шока
+	char *owner = "ВЛК Диверсант";	// Имя владельца (ВЛК Диверсант, если клубный)
 
 
 	arsenal *next;
@@ -23,10 +27,12 @@ struct arsenal {
 
 	void out()
 	{
-		printf("\n%d\n%s\n%d\n%d\n%d\n%f\n%lld\n%d\n%s\nend.\n-------------------------------\n", id, name, number, damage, hp, runtime, cost, shock, owner);
+		printf("%d\n%s\n%d\n%s\n%d\n%d\n%.2f\n%lld\n%d\n%s\n-------------------------------\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
 	}
 };
 typedef arsenal *Pbd;
+
+Pbd baza = NULL;
 
 void putID(Pbd &Head) {
 	Pbd q = Head;
@@ -49,10 +55,14 @@ void add(Pbd &Head, Pbd Newbd)
 {
 	Pbd q = Head;
 	if (Head == NULL) { // если список пуст,
+		Head->id = -100;
+		Head->next = NULL;
 		AddFirst(Head, Newbd); // вставляем первый элемент
 		return;
 	}
-	while (q->next!=NULL) q = q->next; // ищем последний элемент
+	Pbd e;
+	while (e = q->next, e->id != -100) q = q->next; // ищем последний элемент
+	Newbd->next = NULL;
 	q->next = Newbd;
 	q = Head;
 	putID(Head);
@@ -103,43 +113,20 @@ int intLi(char s[1000]) {
 	return 1;
 }
 
-void save(Pbd &base) {
-	FILE *f = fopen("database.txt", "w");
-	Pbd baza = base;
-	while (baza != NULL) {
-		fwrite(&baza, sizeof(struct arsenal), 1, f);
-		baza = baza->next;
+void outs() {
+	Pbd base = baza;
+	printf("База данных:\n");
+	while (base->id != -100) {
+		base->out();
+		base = base->next;
 	}
-	fclose(f);
 }
 
-void scan(Pbd &base) {
-	FILE *f = fopen("database.txt", "r");
-	Pbd baza = base;
-	while (fread(&baza, sizeof(struct arsenal), 1, f) == 1) {
-		baza->out();
-		baza = baza->next;
-	}
-	baza = NULL;
-	fclose(f);
-}
-
-int main()
-{
-	setlocale(LC_ALL, "RUS");
-	/*
-	Pbd CreateBD(char *nam, int COUNT) {
-		Pbd try = new arsenal;
-		try->number = COUNT;
-		tr->next = NULL;
-		return try;
-	}*/
-
+void inc() {
 	Pbd one = new arsenal;
-	Pbd baza = NULL;
-	Pbd bazaa = NULL;
 	one->name = "Mixno";
 	one->number = 12;
+	one->collor = red;
 	add(baza, one);
 	one->next = NULL;
 	one = new arsenal;
@@ -159,16 +146,50 @@ int main()
 	one->number = 1204;
 	one->next = NULL;
 	AddFirst(baza, one);
+}
 
-	int com = -1, //Номер команды
-		u = -20,  //Just needed
-		kolKom=2; //Количество команд управления
+void saves() {
+	FILE *f = fopen("database.txt", "w");
+	Pbd base = baza;
+	while (base != NULL) {
+		fwrite(&base, sizeof(struct arsenal), 1, f);
+		base = base->next;
+	}
+	fclose(f);
+}
+
+void scans() {
+	FILE *ff = fopen("database.txt", "r");
+	Pbd base;
+	baza = new arsenal;
+	baza = NULL;
+	while (fread(&base, sizeof(struct arsenal), 1, ff) == 1) {
+	//	base->out();
+		add(baza, base);
+		base = NULL;
+	}
+	outs();
+	fclose(ff);
+}
+
+
+int main()
+{
+	setlocale(LC_ALL, "RUS");
+
+	inc();
+
+	int com = -1,	 // Номер команды
+		u = -20,	 // Just needed
+		kolKom = 3;	 // Количество команд управления
 	char s[1000];
 	while (1) {
 		com = -1;
+		u = -20;
 		printf("Введите команду:\n");
 		printf("0 - Сохранить в файл\n");
 		printf("1 - Загрузить из файла\n");
+		printf("2 - Вывести базу данных на экран\n");
 		gets_s(s, 999);
 		u = StrToInt(s);
 		while ((intLi(s) == 0) || (u == -1)) {
@@ -178,8 +199,9 @@ int main()
 			u = StrToInt(s);
 		}
 		if (u > kolKom - 1) goto repeat;
-		if (u == 0) save(baza);
-		if (u == 1) scan(bazaa);
+		if (u == 0) saves(); else
+		if (u == 1) scans(); else
+		if (u == 2) outs();
 	}
 
 
