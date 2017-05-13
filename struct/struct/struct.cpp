@@ -23,7 +23,7 @@ int StrToInt(char *ss) {
 		if (*s == '8') { i = 10 * i + 8; }
 		if (*s == '9') { i = 10 * i + 9; }
 		s++;
-		if (ii > i) return -1;
+		//if (ii > i) return -1;
 	}
 	return i;
 }
@@ -67,24 +67,34 @@ enum colors { blue, red, green, yellow };
 char *coloris[] {"Синий", "Красный" , "Зеленый" , "Желтый" };
 
 struct arsenal {
-	int id = -1;					// ID
-	char *name = "";				// Название вооружения
-	short number = -1;				// Номер
-	colors collor = blue;			// Цвет 
-	int damage = 25;				// Урон
-	int hp = 100;					// Здоровье
-	float runtime = 0.0;			// Время работы (дробные часы)
-	long long cost = 0;				// Стоимость (в рублях)
-	short shock = 0;				// Время шока (мс)
-	char *owner = "ВЛК Диверсант";	// Имя владельца (ВЛК Диверсант, если клубный)
+	int id = -1;						// ID
+	char name[20] = "";					// Название вооружения
+	short number = -1;					// Номер
+	colors collor = blue;				// Цвет 
+	int damage = 25;					// Урон
+	int hp = 100;						// Здоровье
+	float runtime = 0.0;				// Время работы (дробные часы)
+	long long cost = 0;					// Стоимость (в рублях)
+	short shock = 0;					// Время шока (мс)
+	char owner[14] = "ВЛК Диверсант";	// Имя владельца (ВЛК Диверсант, если клубный)
 
+      /*ID					3
+		Название вооружения 20
+		Номер				6
+		Цвет				8
+		Урон				5
+		Здоровье			9
+		Время работы	    13
+		Стоимость		    10
+		Шок				    5
+		Имя владельца		14*/
 
 	arsenal *next;
 
 
 	void out()
 	{
-		printf("ID: %d\nНазвание вооружения: %s\nНомер: %d\nЦвет: %s\nУрон: %d%%\nЗдоровье: %d%%\nВремя работы: %.2f часов\nСтоимость: %lld рублей\nШок: %d мс\nИмя владельца: %s\n-------------------------------\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
+		printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-9lld|%-4d|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
 	}
 };
 typedef arsenal *Pbd;
@@ -123,7 +133,13 @@ void add(Pbd &Head, Pbd Newbd)
 	putID(Head);
 }
 
-void del(Pbd &Head, int id) {
+void delet(Pbd &Head, int id) {
+	ID--;
+	if (id == 0) {
+		Head = Head->next;
+		putID(Head);
+		return;
+	}
 	Pbd q = Head, qq = Head;
 	while (q->id != id) {
 		qq = q;
@@ -133,9 +149,26 @@ void del(Pbd &Head, int id) {
 	putID(Head);
 }
 
+void dels() {
+	if (ID == -1) {
+		printf("База пуста.\n");
+		return;
+	}
+	char s[1000];
+	printf("Введите ID элемента:");
+	gets_s(s, 999);
+	int id = StrToInt(s);
+	while ((intLi(s) == 0) || (id < 0) || (id > ID)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		id = StrToInt(s);
+	}
+	delet(baza, id);
+}
+
 void outs() {
-	Pbd base = baza;
-	printf("База данных:\n");
+	Pbd base = baza;								
+	printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
 	while (base != NULL) {
 		base->out();
 		base = base->next;
@@ -146,21 +179,24 @@ void ins() {
 	Pbd one = new arsenal;
 
 
-	char s[1000] = "";
+	char s[1000];
 
-	printf("Название вооружения:");
-	gets_s(s, 999);
-	one->name = s;
+	printf("Название вооружения (более 19 букв обрезается):");
+	gets_s(s, 999);	
+	s[19] = '\0';
+	strcpy(one->name, s);
 
-	printf("Номер:");
+	printf("Номер (более 5 цифр обрезается):");
 	gets_s(s, 999);
 	int y = StrToInt(s);
-	while ((intLi(s) == 0) || (y == -1)) {
+	while (intLi(s) == 0) {
 		printf("Вы ввели неверное число. Повторите ввод:");
 		gets_s(s, 999);
 		y = StrToInt(s);
 	}
-	one->id = y;
+	s[5] = '\0';
+	y = StrToInt(s);
+	one->number = y % 100000;
 
 	printf("Цвет:");
 	gets_s(s, 999);
@@ -174,7 +210,7 @@ void ins() {
 			if (myStrcmp(s, "Зеленый") || myStrcmp(s, "зеленый")) one->collor = green; else
 				if (myStrcmp(s, "Желтый") || myStrcmp(s, "желтый")) one->collor = yellow;
 
-	printf("Урон:");
+	printf("Урон (более 4 цифр обрезается):");
 	gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
@@ -182,9 +218,11 @@ void ins() {
 		gets_s(s, 999);
 		y = StrToInt(s);
 	}
-	one->damage = y;
+	s[4] = '\0';
+	y = StrToInt(s);
+	one->damage = y % 10000;
 
-	printf("Здоровье:");
+	printf("Здоровье (более 4 цифр обрезается):");
 	gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
@@ -192,9 +230,11 @@ void ins() {
 		gets_s(s, 999);
 		y = StrToInt(s);
 	}
-	one->hp = y;
+	s[4] = '\0';
+	y = StrToInt(s);
+	one->hp = y % 10000;
 
-	printf("Время работы (дробью через точку):");
+	printf("Время работы (дробью через точку не более 8 символов):");
 	gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
@@ -202,7 +242,37 @@ void ins() {
 		gets_s(s, 999);
 		y = StrToInt(s);
 	}
+	s[8] = '\0';
 	one->runtime = atof(s);
+
+	printf("Стоимость в рублях (более 9 цифр обрезается):");
+	gets_s(s, 999);
+	y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	s[9] = '\0';
+	y = StrToInt(s);
+	one->cost = y % 1000000000;
+
+	printf("Шок в мс (более 4 цифр обрезается):");
+	gets_s(s, 999);
+	y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	s[4] = '\0';
+	y = StrToInt(s);
+	one->shock = y % 10000;
+
+	printf("Имя владельца (более 13 букв обрезается):");
+	gets_s(s, 999);
+	s[13] = '\0';
+	if (myStrcmp(s, "") == 0) strcpy(one->owner, s);
 
 	one->next = NULL;
 	add(baza, one);
@@ -210,7 +280,7 @@ void ins() {
 
 void inc() {
 	Pbd one = new arsenal;
-	one->name = "АК-105";
+	strcpy(one->name, "АК-105");
 	one->collor = blue;
 	one->cost = 33500;
 	one->damage = 25;
@@ -221,7 +291,7 @@ void inc() {
 	one->next = NULL;
 	add(baza, one);
 	one = new arsenal;
-	one->name = "АК-12LT Хищник";
+	strcpy(one->name, "АК-12LT Хищник");
 	one->collor = red;
 	one->cost = 27000;
 	one->damage = 25;
@@ -229,14 +299,238 @@ void inc() {
 	one->number = 60;
 	one->runtime = 7.39;
 	one->shock = 1000;
-	one->owner = "ДиКарь";
+	strcpy(one->owner, "ДиКарь");
 	one->next = NULL;
 	add(baza, one);
+}
+
+void finds() {
+	Pbd base = baza;
+	int count = 0;
+	printf("Введите номер критерия поиска:");
+	int com = -1,	 // Номер команды
+		u = -20,	 // Just needed
+		kolKom = 10;	 // Количество команд управления
+	char s[1000];
+		com = -1;
+		u = -20;
+		printf("0 - ID\n");
+		printf("1 - Название вооружения\n");
+		printf("2 - Номер\n");
+		printf("3 - Цвет\n");
+		printf("4 - Урон\n");
+		printf("5 - Здоровье\n");
+		printf("6 - Время работы\n");
+		printf("7 - Стоимость\n");
+		printf("8 - Шок\n");
+		printf("9 - Имя владельца\n");
+		gets_s(s, 999);
+		u = StrToInt(s);
+		while ((intLi(s) == 0) || (u == -1)) {
+		repeats:;
+			printf("Вы ввели неверное число или строку. Повторите ввод:");
+			gets_s(s, 999);
+			u = StrToInt(s);
+		}
+		system("cls");
+		if (u > kolKom - 1) goto repeats; else
+
+		if (u == 0) {
+				printf("ID:");
+				gets_s(s, 999);
+				int id = StrToInt(s);
+				while ((intLi(s) == 0) || (id < 0) || (id > ID)) {
+					printf("Вы ввели неверное число. Повторите ввод:");
+					gets_s(s, 999);
+					id = StrToInt(s);
+				}
+				printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+				while (base != NULL) {
+					if (base->id == id) {
+						count++; base->out();
+					} base = base->next;
+				}
+				if (count == 0) printf("Элемент не найден.\n");
+				}
+		if (u == 1) {
+			printf("Название вооружения (более 19 букв обрезается):");
+			gets_s(s, 999);
+			s[19] = '\0';
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (myStrcmp(s, base->name)) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 2) {
+			printf("Номер (более 5 цифр обрезается):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while (intLi(s) == 0) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[5] = '\0';
+			y = StrToInt(s);
+			y = y % 100000;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->number == y) {
+					count++; base->out();
+				} base = base->next;
+			}
+				if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 3) {
+			printf("Цвет:");
+			gets_s(s, 999);
+			myStrcmp(s, "Синий");
+			while (!myStrcmp(s, "Синий") && !myStrcmp(s, "синий") && !myStrcmp(s, "Красный") && !myStrcmp(s, "красный") && !myStrcmp(s, "Зеленый") && !myStrcmp(s, "зеленый") && !myStrcmp(s, "Желтый") && !myStrcmp(s, "желтый")) {
+				printf("Вы ввели неверный цвет. Повторите ввод:");
+				gets_s(s, 999);
+			}
+			colors collor;
+			if (myStrcmp(s, "Синий") || myStrcmp(s, "синий")) collor = blue; else
+			if (myStrcmp(s, "Красный") || myStrcmp(s, "красный"))collor = red; else
+			if (myStrcmp(s, "Зеленый") || myStrcmp(s, "зеленый")) collor = green; else
+			if (myStrcmp(s, "Желтый") || myStrcmp(s, "желтый")) collor = yellow;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) { 
+				if (base->collor == collor) {
+				count++; base->out();
+			} base = base->next; }
+			if (count==0) printf("Элемент не найден.\n");
+		}
+		if (u == 4) {
+			printf("Урон (более 4 цифр обрезается):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while ((intLi(s) == 0) || (y == -1)) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[4] = '\0';
+			y = StrToInt(s);
+			y = y % 10000;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->damage == y) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 5) {
+			printf("Здоровье (более 4 цифр обрезается):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while ((intLi(s) == 0) || (y == -1)) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[4] = '\0';
+			y = StrToInt(s);
+			y = y % 10000;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->hp == y) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 6) {
+			printf("Время работы (дробью через точку не более 8 символов):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while ((intLi(s) == 0) || (y == -1)) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[8] = '\0';
+			double f = atof(s);
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->runtime == f) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 7) {
+			printf("Стоимость в рублях (более 9 цифр обрезается):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while ((intLi(s) == 0) || (y == -1)) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[9] = '\0';
+			y = StrToInt(s);
+			y = y % 1000000000;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->cost == y) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 8) {
+			printf("Шок в мс (более 4 цифр обрезается):");
+			gets_s(s, 999);
+			int y = StrToInt(s);
+			while ((intLi(s) == 0) || (y == -1)) {
+				printf("Вы ввели неверное число. Повторите ввод:");
+				gets_s(s, 999);
+				y = StrToInt(s);
+			}
+			s[4] = '\0';
+			y = StrToInt(s);
+			y = y % 10000;
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (base->shock == y) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		if (u == 9) {
+			printf("Имя владельца (более 13 букв обрезается):");
+			gets_s(s, 999);
+			s[13] = '\0';
+			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+			while (base != NULL) {
+				if (myStrcmp(s, base->owner)) {
+					count++; base->out();
+				} base = base->next;
+			}
+			if (count == 0) printf("Элемент не найден.\n");
+		}
+		else printf("\n");
+		u = -1;
 }
 
 
 int main()
 {
+	HANDLE out_handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD maxWindow = GetLargestConsoleWindowSize(out_handle); // размер самого большого возможного консольного окна
+	SMALL_RECT srctWindow = { 0, 0, maxWindow.X - 101, maxWindow.Y - 24 };
+	SMALL_RECT minWindow = { 0, 0, 0, 0 };
+	SetConsoleWindowInfo(out_handle, true, &minWindow);
+	SetConsoleScreenBufferSize(out_handle, maxWindow);
+	SetConsoleWindowInfo(out_handle, true, &srctWindow);
+
+
 	SetConsoleCP(1251);// установка кодовой страницы win-cp 1251 в поток ввода
 	SetConsoleOutputCP(1251); // установка кодовой страницы win-cp 1251 в поток вывода
 
@@ -244,7 +538,7 @@ int main()
 
 	int com = -1,	 // Номер команды
 		u = -20,	 // Just needed
-		kolKom = 3;	 // Количество команд управления
+		kolKom = 5;	 // Количество команд управления
 	char s[1000];
 	while (1) {
 		com = -1;
@@ -252,6 +546,9 @@ int main()
 		printf("Введите команду:\n");
 		printf("0 - Вывести базу данных на экран\n");
 		printf("1 - Добавить элемент\n");
+		printf("2 - Найти элемент\n");
+		printf("3 - Удалить элемент\n");
+		printf("4 - Удалить всю базу\n");
 		gets_s(s, 999);
 		u = StrToInt(s);
 		while ((intLi(s) == 0) || (u == -1)) {
@@ -260,13 +557,16 @@ int main()
 			gets_s(s, 999);
 			u = StrToInt(s);
 		}
+		system("cls");
 		if (u > kolKom - 1) goto repeat; else
 		if (u == 0) outs();
 		if (u == 1) ins();
+		if (u == 2) finds();
+		if (u == 3) dels();
+		if (u == 4) { baza = NULL; ID = -1; } else printf("\n");
 		u = -1;
 	}
 
 
 	return 0;
 }
-
