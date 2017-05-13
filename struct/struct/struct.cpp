@@ -156,11 +156,11 @@ void dels() {
 	}
 	char s[1000];
 	printf("Введите ID элемента:");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	int id = StrToInt(s);
 	while ((intLi(s) == 0) || (id < 0) || (id > ID)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		id = StrToInt(s);
 	}
 	delet(baza, id);
@@ -182,16 +182,16 @@ void ins() {
 	char s[1000];
 
 	printf("Название вооружения (более 19 букв обрезается):");
-	gets_s(s, 999);	
+	s[0] = '\0'; gets_s(s, 999);	
 	s[19] = '\0';
 	strcpy(one->name, s);
 
 	printf("Номер (более 5 цифр обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	int y = StrToInt(s);
 	while (intLi(s) == 0) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[5] = '\0';
@@ -199,11 +199,11 @@ void ins() {
 	one->number = y % 100000;
 
 	printf("Цвет:");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	myStrcmp(s, "Синий");
 	while (!myStrcmp(s, "Синий") && !myStrcmp(s, "синий") && !myStrcmp(s, "Красный") && !myStrcmp(s, "красный") && !myStrcmp(s, "Зеленый") && !myStrcmp(s, "зеленый") && !myStrcmp(s, "Желтый") && !myStrcmp(s, "желтый")) {
 		printf("Вы ввели неверный цвет. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 	}
 	if (myStrcmp(s, "Синий") || myStrcmp(s, "синий")) one->collor = blue; else
 		if (myStrcmp(s, "Красный") || myStrcmp(s, "красный")) one->collor = red; else
@@ -211,11 +211,11 @@ void ins() {
 				if (myStrcmp(s, "Желтый") || myStrcmp(s, "желтый")) one->collor = yellow;
 
 	printf("Урон (более 4 цифр обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[4] = '\0';
@@ -223,11 +223,11 @@ void ins() {
 	one->damage = y % 10000;
 
 	printf("Здоровье (более 4 цифр обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[4] = '\0';
@@ -235,22 +235,22 @@ void ins() {
 	one->hp = y % 10000;
 
 	printf("Время работы (дробью через точку не более 8 символов):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[8] = '\0';
 	one->runtime = atof(s);
 
 	printf("Стоимость в рублях (более 9 цифр обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[9] = '\0';
@@ -258,11 +258,11 @@ void ins() {
 	one->cost = y % 1000000000;
 
 	printf("Шок в мс (более 4 цифр обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
 	s[4] = '\0';
@@ -270,7 +270,7 @@ void ins() {
 	one->shock = y % 10000;
 
 	printf("Имя владельца (более 13 букв обрезается):");
-	gets_s(s, 999);
+	s[0] = '\0'; gets_s(s, 999);
 	s[13] = '\0';
 	if (myStrcmp(s, "") == 0) strcpy(one->owner, s);
 
@@ -324,12 +324,12 @@ void finds() {
 		printf("7 - Стоимость\n");
 		printf("8 - Шок\n");
 		printf("9 - Имя владельца\n");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		u = StrToInt(s);
 		while ((intLi(s) == 0) || (u == -1)) {
 		repeats:;
 			printf("Вы ввели неверное число или строку. Повторите ввод:");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			u = StrToInt(s);
 		}
 		system("cls");
@@ -337,11 +337,11 @@ void finds() {
 
 		if (u == 0) {
 				printf("ID:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				int id = StrToInt(s);
 				while ((intLi(s) == 0) || (id < 0) || (id > ID)) {
 					printf("Вы ввели неверное число. Повторите ввод:");
-					gets_s(s, 999);
+					s[0] = '\0'; gets_s(s, 999);
 					id = StrToInt(s);
 				}
 				printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
@@ -354,7 +354,7 @@ void finds() {
 				}
 		if (u == 1) {
 			printf("Название вооружения (более 19 букв обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			s[19] = '\0';
 			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
 			while (base != NULL) {
@@ -366,11 +366,11 @@ void finds() {
 		}
 		if (u == 2) {
 			printf("Номер (более 5 цифр обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while (intLi(s) == 0) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[5] = '\0';
@@ -386,11 +386,11 @@ void finds() {
 		}
 		if (u == 3) {
 			printf("Цвет:");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			myStrcmp(s, "Синий");
 			while (!myStrcmp(s, "Синий") && !myStrcmp(s, "синий") && !myStrcmp(s, "Красный") && !myStrcmp(s, "красный") && !myStrcmp(s, "Зеленый") && !myStrcmp(s, "зеленый") && !myStrcmp(s, "Желтый") && !myStrcmp(s, "желтый")) {
 				printf("Вы ввели неверный цвет. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 			}
 			colors collor;
 			if (myStrcmp(s, "Синий") || myStrcmp(s, "синий")) collor = blue; else
@@ -406,11 +406,11 @@ void finds() {
 		}
 		if (u == 4) {
 			printf("Урон (более 4 цифр обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while ((intLi(s) == 0) || (y == -1)) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[4] = '\0';
@@ -426,11 +426,11 @@ void finds() {
 		}
 		if (u == 5) {
 			printf("Здоровье (более 4 цифр обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while ((intLi(s) == 0) || (y == -1)) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[4] = '\0';
@@ -446,11 +446,11 @@ void finds() {
 		}
 		if (u == 6) {
 			printf("Время работы (дробью через точку не более 8 символов):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while ((intLi(s) == 0) || (y == -1)) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[8] = '\0';
@@ -465,11 +465,11 @@ void finds() {
 		}
 		if (u == 7) {
 			printf("Стоимость в рублях (более 9 цифр обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while ((intLi(s) == 0) || (y == -1)) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[9] = '\0';
@@ -485,11 +485,11 @@ void finds() {
 		}
 		if (u == 8) {
 			printf("Шок в мс (более 4 цифр обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			int y = StrToInt(s);
 			while ((intLi(s) == 0) || (y == -1)) {
 				printf("Вы ввели неверное число. Повторите ввод:");
-				gets_s(s, 999);
+				s[0] = '\0'; gets_s(s, 999);
 				y = StrToInt(s);
 			}
 			s[4] = '\0';
@@ -505,7 +505,7 @@ void finds() {
 		}
 		if (u == 9) {
 			printf("Имя владельца (более 13 букв обрезается):");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			s[13] = '\0';
 			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
 			while (base != NULL) {
@@ -549,12 +549,12 @@ int main()
 		printf("2 - Найти элемент\n");
 		printf("3 - Удалить элемент\n");
 		printf("4 - Удалить всю базу\n");
-		gets_s(s, 999);
+		s[0] = '\0'; gets_s(s, 999);
 		u = StrToInt(s);
 		while ((intLi(s) == 0) || (u == -1)) {
 		repeat:;
 			printf("Вы ввели неверное число или строку. Повторите ввод:");
-			gets_s(s, 999);
+			s[0] = '\0'; gets_s(s, 999);
 			u = StrToInt(s);
 		}
 		system("cls");
