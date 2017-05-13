@@ -2,8 +2,65 @@
 #include <stdio.h>
 #include <string.h>
 #include <locale.h>
+#include <windows.h>
 
 int ID=-1; //ID последнего элемента базы
+
+
+int StrToInt(char *ss) {
+	int i = 0, ii = 0;
+	char *s = ss;
+	while (*s) {
+		ii = i;
+		if (*s == '0') { i = 10 * i + 0; }
+		if (*s == '1') { i = 10 * i + 1; }
+		if (*s == '2') { i = 10 * i + 2; }
+		if (*s == '3') { i = 10 * i + 3; }
+		if (*s == '4') { i = 10 * i + 4; }
+		if (*s == '5') { i = 10 * i + 5; }
+		if (*s == '6') { i = 10 * i + 6; }
+		if (*s == '7') { i = 10 * i + 7; }
+		if (*s == '8') { i = 10 * i + 8; }
+		if (*s == '9') { i = 10 * i + 9; }
+		s++;
+		if (ii > i) return -1;
+	}
+	return i;
+}
+
+int intLi(char s[1000]) {
+	int w = 0, dot = 0;
+	char chisla[11] = "0123456789";
+	while (s[w]) {
+		for (int i = 0;i < 10;i++) {
+			if (s[w] == chisla[i]) goto yes;
+			if (s[w] == '.') {
+				dot++;
+				if (dot == 2) return 0;
+				goto yes;
+			}
+		}
+		return 0;
+	yes:
+		w++;
+	}
+	return 1;
+}
+
+int myStrcmp(char s1[1000], char s2[1000]) {
+	int p = 0;
+	if (s1[p] == '\n') s1[p] = '\0';
+	if (s2[p] == '\n') s2[p] = '\0';
+	while (s1[p]) {
+		if (s1[p] != s2[p]) { goto wers; }
+		p++;
+		if (s1[p] == '\n') s1[p] = '\0';
+		if (s2[p] == '\n') s2[p] = '\0';
+	}
+	if (s1[p] == s2[p]) return 1;
+wers:;
+	return 0;
+}
 
 
 enum colors { blue, red, green, yellow };
@@ -11,14 +68,14 @@ char *coloris[] {"Синий", "Красный" , "Зеленый" , "Желтый" };
 
 struct arsenal {
 	int id = -1;					// ID
-	char *name = " ";				// Название вооружения
+	char *name = "";				// Название вооружения
 	short number = -1;				// Номер
 	colors collor = blue;			// Цвет 
-	int damage = -1;				// Урон
-	int hp = -1;					// Здоровье
-	float runtime = -1.0;			// Время работы (дробные часы)
-	long long cost = -1;			// Стоимость (в рублях)
-	short shock = -1;				// Время шока
+	int damage = 25;				// Урон
+	int hp = 100;					// Здоровье
+	float runtime = 0.0;			// Время работы (дробные часы)
+	long long cost = 0;				// Стоимость (в рублях)
+	short shock = 0;				// Время шока (мс)
 	char *owner = "ВЛК Диверсант";	// Имя владельца (ВЛК Диверсант, если клубный)
 
 
@@ -27,7 +84,7 @@ struct arsenal {
 
 	void out()
 	{
-		printf("%d\n%s\n%d\n%s\n%d\n%d\n%.2f\n%lld\n%d\n%s\n-------------------------------\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
+		printf("ID: %d\nНазвание вооружения: %s\nНомер: %d\nЦвет: %s\nУрон: %d%%\nЗдоровье: %d%%\nВремя работы: %.2f часов\nСтоимость: %lld рублей\nШок: %d мс\nИмя владельца: %s\n-------------------------------\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
 	}
 };
 typedef arsenal *Pbd;
@@ -55,14 +112,12 @@ void add(Pbd &Head, Pbd Newbd)
 {
 	Pbd q = Head;
 	if (Head == NULL) { // если список пуст,
-		Head->id = -100;
-		Head->next = NULL;
 		AddFirst(Head, Newbd); // вставляем первый элемент
+		putID(Head);
 		return;
 	}
 	Pbd e;
-	while (e = q->next, e->id != -100) q = q->next; // ищем последний элемент
-	Newbd->next = NULL;
+	while (q->next!=NULL) q = q->next; // ищем последний элемент
 	q->next = Newbd;
 	q = Head;
 	putID(Head);
@@ -78,104 +133,112 @@ void del(Pbd &Head, int id) {
 	putID(Head);
 }
 
-int StrToInt(char *ss) {
-	int i = 0, ii = 0;
-	char *s = ss;
-	while (*s) {
-		ii = i;
-		if (*s == '0') { i = 10 * i + 0; }
-		if (*s == '1') { i = 10 * i + 1; }
-		if (*s == '2') { i = 10 * i + 2; }
-		if (*s == '3') { i = 10 * i + 3; }
-		if (*s == '4') { i = 10 * i + 4; }
-		if (*s == '5') { i = 10 * i + 5; }
-		if (*s == '6') { i = 10 * i + 6; }
-		if (*s == '7') { i = 10 * i + 7; }
-		if (*s == '8') { i = 10 * i + 8; }
-		if (*s == '9') { i = 10 * i + 9; }
-		s++;
-		if (ii > i) return -1;
-	}
-	return i;
-}
-
-int intLi(char s[1000]) {
-	int w = 0;
-	char chisla[11] = "0123456789";
-	while (s[w]) {
-		for (int i = 0;i < 10;i++) {
-			if (s[w] == chisla[i]) goto yes;
-		}
-		return 0;
-	yes:
-		w++;
-	}
-	return 1;
-}
-
 void outs() {
 	Pbd base = baza;
 	printf("База данных:\n");
-	while (base->id != -100) {
+	while (base != NULL) {
 		base->out();
 		base = base->next;
 	}
 }
 
+void ins() {
+	Pbd one = new arsenal;
+
+
+	char s[1000] = "";
+
+	printf("Название вооружения:");
+	gets_s(s, 999);
+	one->name = s;
+
+	printf("Номер:");
+	gets_s(s, 999);
+	int y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	one->id = y;
+
+	printf("Цвет:");
+	gets_s(s, 999);
+	myStrcmp(s, "Синий");
+	while (!myStrcmp(s, "Синий") && !myStrcmp(s, "синий") && !myStrcmp(s, "Красный") && !myStrcmp(s, "красный") && !myStrcmp(s, "Зеленый") && !myStrcmp(s, "зеленый") && !myStrcmp(s, "Желтый") && !myStrcmp(s, "желтый")) {
+		printf("Вы ввели неверный цвет. Повторите ввод:");
+		gets_s(s, 999);
+	}
+	if (myStrcmp(s, "Синий") || myStrcmp(s, "синий")) one->collor = blue; else
+		if (myStrcmp(s, "Красный") || myStrcmp(s, "красный")) one->collor = red; else
+			if (myStrcmp(s, "Зеленый") || myStrcmp(s, "зеленый")) one->collor = green; else
+				if (myStrcmp(s, "Желтый") || myStrcmp(s, "желтый")) one->collor = yellow;
+
+	printf("Урон:");
+	gets_s(s, 999);
+	y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	one->damage = y;
+
+	printf("Здоровье:");
+	gets_s(s, 999);
+	y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	one->hp = y;
+
+	printf("Время работы (дробью через точку):");
+	gets_s(s, 999);
+	y = StrToInt(s);
+	while ((intLi(s) == 0) || (y == -1)) {
+		printf("Вы ввели неверное число. Повторите ввод:");
+		gets_s(s, 999);
+		y = StrToInt(s);
+	}
+	one->runtime = atof(s);
+
+	one->next = NULL;
+	add(baza, one);
+}
+
 void inc() {
 	Pbd one = new arsenal;
-	one->name = "Mixno";
-	one->number = 12;
+	one->name = "АК-105";
+	one->collor = blue;
+	one->cost = 33500;
+	one->damage = 25;
+	one->hp = 100;
+	one->number = 6;
+	one->runtime = 3.71;
+	one->shock = 1000;
+	one->next = NULL;
+	add(baza, one);
+	one = new arsenal;
+	one->name = "АК-12LT Хищник";
 	one->collor = red;
-	add(baza, one);
-	one->next = NULL;
-	one = new arsenal;
-	one->name = "MixNo";
-	one->number = 14;
-	one->next = NULL;
-	add(baza, one);
-	one = new arsenal;
-	one->name = "MixNoooooooooo";
-	one->number = 229878;
+	one->cost = 27000;
+	one->damage = 25;
+	one->hp = 100;
+	one->number = 60;
+	one->runtime = 7.39;
+	one->shock = 1000;
+	one->owner = "ДиКарь";
 	one->next = NULL;
 	add(baza, one);
-
-
-	one = new arsenal;
-	one->name = "Hui";
-	one->number = 1204;
-	one->next = NULL;
-	AddFirst(baza, one);
-}
-
-void saves() {
-	FILE *f = fopen("database.txt", "w");
-	Pbd base = baza;
-	while (base != NULL) {
-		fwrite(&base, sizeof(struct arsenal), 1, f);
-		base = base->next;
-	}
-	fclose(f);
-}
-
-void scans() {
-	FILE *ff = fopen("database.txt", "r");
-	Pbd base;
-	baza = new arsenal;
-	baza = NULL;
-	while (fread(&base, sizeof(struct arsenal), 1, ff) == 1) {
-	//	base->out();
-		add(baza, base);
-		base = NULL;
-	}
-	outs();
-	fclose(ff);
 }
 
 
 int main()
 {
-	setlocale(LC_ALL, "RUS");
+	SetConsoleCP(1251);// установка кодовой страницы win-cp 1251 в поток ввода
+	SetConsoleOutputCP(1251); // установка кодовой страницы win-cp 1251 в поток вывода
 
 	inc();
 
@@ -187,9 +250,8 @@ int main()
 		com = -1;
 		u = -20;
 		printf("Введите команду:\n");
-		printf("0 - Сохранить в файл\n");
-		printf("1 - Загрузить из файла\n");
-		printf("2 - Вывести базу данных на экран\n");
+		printf("0 - Вывести базу данных на экран\n");
+		printf("1 - Добавить элемент\n");
 		gets_s(s, 999);
 		u = StrToInt(s);
 		while ((intLi(s) == 0) || (u == -1)) {
@@ -198,10 +260,10 @@ int main()
 			gets_s(s, 999);
 			u = StrToInt(s);
 		}
-		if (u > kolKom - 1) goto repeat;
-		if (u == 0) saves(); else
-		if (u == 1) scans(); else
-		if (u == 2) outs();
+		if (u > kolKom - 1) goto repeat; else
+		if (u == 0) outs();
+		if (u == 1) ins();
+		u = -1;
 	}
 
 
