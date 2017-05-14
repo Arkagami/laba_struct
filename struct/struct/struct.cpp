@@ -90,13 +90,6 @@ wers:;
 	return 0;
 }
 
-union charging {						// Заряд в процентах
-	int percent;
-	char *status;
-};
-char *myChar(charging ch) {
-	if ((ch.percent>-1)&&(ch.percent<101)) return IntToStr(ch.percent); else return "Заряжен";//ch.status;
-}
 enum colors { blue, red, green, yellow };
 char *coloris[]{ "Синий", "Красный" , "Зеленый" , "Желтый" };
 
@@ -110,7 +103,6 @@ struct arsenal {
 	float runtime = 0.0;				// Время работы (дробные часы)
 	long long cost = 0;					// Стоимость (в рублях)
 	short shock = 0;					// Время шока (мс)
-	charging charge;
 	char owner[14] = "ВТК Диверсант";	// Имя владельца (ВТК Диверсант, если клубный)
 
 										/*ID					3
@@ -129,7 +121,7 @@ struct arsenal {
 
 	void out()
 	{
-		printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-9lld|%-4d|%-8s|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, myChar(charge), owner);
+		printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-9lld|%-4d|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
 	}
 };
 typedef arsenal *Pbd;
@@ -323,7 +315,6 @@ void inc() {
 	one->number = 6;
 	one->runtime = 3.71;
 	one->shock = 1000;
-	one->charge.percent = 79;
 	one->next = NULL;
 	add(baza, one);
 	one = new arsenal;
@@ -335,7 +326,6 @@ void inc() {
 	one->number = 60;
 	one->runtime = 7.39;
 	one->shock = 1000;
-	one->charge.status = "Разряжен";
 	strcpy(one->owner, "Mixno");
 	one->next = NULL;
 	add(baza, one);
