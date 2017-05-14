@@ -29,7 +29,7 @@ int StrToInt(char *ss) {
 }
 
 char *IntToStr(int i){
-	char s[2147483647];
+	char s[100000];
 if (i == 0) { return "0"; }
 int k = 0, strkol = 0;
 while (i>0) {
@@ -95,7 +95,7 @@ union charging {						// Заряд в процентах
 	char *status;
 };
 char *myChar(charging ch) {
-	if (ch.percent != NULL) return IntToStr(ch.percent); else return ch.status;
+	if ((ch.percent>-1)&&(ch.percent<101)) return IntToStr(ch.percent); else return "Заряжен";//ch.status;
 }
 enum colors { blue, red, green, yellow };
 char *coloris[]{ "Синий", "Красный" , "Зеленый" , "Желтый" };
@@ -110,7 +110,7 @@ struct arsenal {
 	float runtime = 0.0;				// Время работы (дробные часы)
 	long long cost = 0;					// Стоимость (в рублях)
 	short shock = 0;					// Время шока (мс)
-	charging charge = { 30 };
+	charging charge;
 	char owner[14] = "ВТК Диверсант";	// Имя владельца (ВТК Диверсант, если клубный)
 
 										/*ID					3
@@ -323,6 +323,7 @@ void inc() {
 	one->number = 6;
 	one->runtime = 3.71;
 	one->shock = 1000;
+	one->charge.percent = 79;
 	one->next = NULL;
 	add(baza, one);
 	one = new arsenal;
@@ -334,6 +335,7 @@ void inc() {
 	one->number = 60;
 	one->runtime = 7.39;
 	one->shock = 1000;
+	one->charge.status = "Разряжен";
 	strcpy(one->owner, "Mixno");
 	one->next = NULL;
 	add(baza, one);
