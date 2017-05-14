@@ -28,6 +28,34 @@ int StrToInt(char *ss) {
 	return i;
 }
 
+char *IntToStr(int i){
+	char s[2147483647];
+if (i == 0) { return "0"; }
+int k = 0, strkol = 0;
+while (i>0) {
+	k = i % 10;
+	i /= 10;
+	if (k == 0) { s[strkol++] = '0'; }
+	if (k == 1) { s[strkol++] = '1'; }
+	if (k == 2) { s[strkol++] = '2'; }
+	if (k == 3) { s[strkol++] = '3'; }
+	if (k == 4) { s[strkol++] = '4'; }
+	if (k == 5) { s[strkol++] = '5'; }
+	if (k == 6) { s[strkol++] = '6'; }
+	if (k == 7) { s[strkol++] = '7'; }
+	if (k == 8) { s[strkol++] = '8'; }
+	if (k == 9) { s[strkol++] = '9'; }
+}
+s[strkol] = '\0';
+char c = 'n';
+for (k = 0;k <= (strkol) / 2; k++) {
+	c = s[k];
+	s[k] = s[strkol - k - 1];
+	s[strkol - k - 1] = c;
+}
+return s;
+}
+
 int intLi(char s[1000]) {
 	int w = 0, dot = 0;
 	char chisla[11] = "0123456789";
@@ -62,7 +90,13 @@ wers:;
 	return 0;
 }
 
-
+union charging {						// Заряд в процентах
+	int percent;
+	char *status;
+};
+char *myChar(charging ch) {
+	if (ch.percent != NULL) return IntToStr(ch.percent); else return ch.status;
+}
 enum colors { blue, red, green, yellow };
 char *coloris[]{ "Синий", "Красный" , "Зеленый" , "Желтый" };
 
@@ -76,6 +110,7 @@ struct arsenal {
 	float runtime = 0.0;				// Время работы (дробные часы)
 	long long cost = 0;					// Стоимость (в рублях)
 	short shock = 0;					// Время шока (мс)
+	charging charge = { 30 };
 	char owner[14] = "ВТК Диверсант";	// Имя владельца (ВТК Диверсант, если клубный)
 
 										/*ID					3
@@ -94,7 +129,7 @@ struct arsenal {
 
 	void out()
 	{
-		printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-9lld|%-4d|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, owner);
+		printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-9lld|%-4d|%-8s|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, cost, shock, myChar(charge), owner);
 	}
 };
 typedef arsenal *Pbd;
@@ -168,7 +203,7 @@ void dels() {
 
 void outs() {
 	Pbd base = baza;
-	printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Имя владельца|\n");
+	printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Стоимость|Шок |Заряд   |Имя владельца|\n");
 	while (base != NULL) {
 		base->out();
 		base = base->next;
@@ -299,7 +334,7 @@ void inc() {
 	one->number = 60;
 	one->runtime = 7.39;
 	one->shock = 1000;
-	strcpy(one->owner, "ДиКарь");
+	strcpy(one->owner, "Mixno");
 	one->next = NULL;
 	add(baza, one);
 }
