@@ -28,34 +28,6 @@ int StrToInt(char *ss) {
 	return i;
 }
 
-char *IntToStr(int i){
-	char s[100000];
-if (i == 0) { return "0"; }
-int k = 0, strkol = 0;
-while (i>0) {
-	k = i % 10;
-	i /= 10;
-	if (k == 0) { s[strkol++] = '0'; }
-	if (k == 1) { s[strkol++] = '1'; }
-	if (k == 2) { s[strkol++] = '2'; }
-	if (k == 3) { s[strkol++] = '3'; }
-	if (k == 4) { s[strkol++] = '4'; }
-	if (k == 5) { s[strkol++] = '5'; }
-	if (k == 6) { s[strkol++] = '6'; }
-	if (k == 7) { s[strkol++] = '7'; }
-	if (k == 8) { s[strkol++] = '8'; }
-	if (k == 9) { s[strkol++] = '9'; }
-}
-s[strkol] = '\0';
-char c = 'n';
-for (k = 0;k <= (strkol) / 2; k++) {
-	c = s[k];
-	s[k] = s[strkol - k - 1];
-	s[strkol - k - 1] = c;
-}
-return s;
-}
-
 int intLi(char s[1000]) {
 	int w = 0, dot = 0;
 	char chisla[11] = "0123456789";
@@ -225,7 +197,7 @@ void ins() {
 	y = StrToInt(s);
 	one->number = y % 100000;
 
-	printf("Цвет:");
+	printf("Цвет (Синий, Красный , Зеленый , Желтый):");
 	s[0] = '\0'; gets_s(s, 999);
 	myStrcmp(s, "Синий");
 	while (!myStrcmp(s, "Синий") && !myStrcmp(s, "синий") && !myStrcmp(s, "Красный") && !myStrcmp(s, "красный") && !myStrcmp(s, "Зеленый") && !myStrcmp(s, "зеленый") && !myStrcmp(s, "Желтый") && !myStrcmp(s, "желтый")) {
@@ -587,7 +559,7 @@ int main()
 		}
 		system("cls");
 		if (u > kolKom - 1) goto repeat; else
-			if (u == 0) outs();
+		if (u == 0) outs();
 		if (u == 1) ins();
 		if (u == 2) finds();
 		if (u == 3) dels();
