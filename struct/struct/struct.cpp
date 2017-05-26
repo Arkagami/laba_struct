@@ -257,44 +257,33 @@ void ins() {
 	s[8] = '\0';
 	one->runtime = atof(s);
 
-	printf("Заряд аккумулятора (более 2 цифр обрезается; доступны статусы \"Заряжен\", \"Заряжается\", \"Разряжен\"):");
+	printf("Заряд аккумулятора (более 100 - обрезается 2 цифры):");
 	s[0] = '\0'; gets_s(s, 999);
 	y = StrToInt(s);
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
 		s[0] = '\0'; gets_s(s, 999);
-		if (s[0] == 'з') s[0] = 'З';
-		if (s[0] == 'р') s[0] = 'Р';
-		if ((myStrcmp(s, "Заряжен") == 1) || (myStrcmp(s, "Заряжается") == 1) || (myStrcmp(s, "Разряжен") == 1)) {
-			one->charge.news(); strcpy(one->charge.status, s); one->what = 2; goto outss;
-		}
 		y = StrToInt(s);
 	}
+	one->charge.news();
 	s[3] = '\0';
-	char ss[1000];
-	ss[0] = s[0];
-	ss[1] = s[1];
-	ss[2] = '\0';
 	y = StrToInt(s);
 	if (y > 100) {
-		y = StrToInt(ss);
+		s[2] = '\0';
+		y = StrToInt(s);
 	}
 	if ((y > 5) && (y < 100)) {
 		one->what = 1;
-		one->charge.news();
 		one->charge.percent = y;
 	}
 	if (y == 100) {
 		one->what = 2;
-		one->charge.news();
 		one->charge.status = "Заряжен";
 	}
 	if (y <= 5) {
 		one->what = 2;
-		one->charge.news();
 		one->charge.status = "Разряжен";
 	}
-	outss:;
 
 	printf("Стоимость в рублях (более 9 цифр обрезается):");
 	s[0] = '\0'; gets_s(s, 999);
