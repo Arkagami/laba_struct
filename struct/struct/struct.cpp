@@ -263,28 +263,35 @@ void ins() {
 	while ((intLi(s) == 0) || (y == -1)) {
 		printf("Вы ввели неверное число. Повторите ввод:");
 		s[0] = '\0'; gets_s(s, 999);
-		if ((myStrcmp(s, "Заряжен") == 1) || (myStrcmp(s, "заряжен") == 1) || (myStrcmp(s, "Заряжается") == 1) || (myStrcmp(s, "заряжается") == 1) || (myStrcmp(s, "Разряжен") == 1) || (myStrcmp(s, "разряжен") == 1)) {
+		if (s[0] == 'з') s[0] = 'З';
+		if (s[0] == 'р') s[0] = 'Р';
+		if ((myStrcmp(s, "Заряжен") == 1) || (myStrcmp(s, "Заряжается") == 1) || (myStrcmp(s, "Разряжен") == 1)) {
 			one->charge.news(); strcpy(one->charge.status, s); one->what = 2; goto outss;
 		}
 		y = StrToInt(s);
 	}
-	one->charge.news();
 	s[3] = '\0';
+	char ss[1000];
+	ss[0] = s[0];
+	ss[1] = s[1];
+	ss[2] = '\0';
 	y = StrToInt(s);
 	if (y > 100) {
-		s[2] = '\0';
-		y = StrToInt(s);
+		y = StrToInt(ss);
 	}
 	if ((y > 5) && (y < 100)) {
 		one->what = 1;
+		one->charge.news();
 		one->charge.percent = y;
 	}
 	if (y == 100) {
 		one->what = 2;
+		one->charge.news();
 		one->charge.status = "Заряжен";
 	}
 	if (y <= 5) {
 		one->what = 2;
+		one->charge.news();
 		one->charge.status = "Разряжен";
 	}
 	outss:;
