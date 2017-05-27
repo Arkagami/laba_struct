@@ -6,7 +6,6 @@
 
 int ID = -1; //ID последнего элемента базы
 
-
 int StrToInt(char *ss) {
 	int i = 0, ii = 0;
 	char *s = ss;
@@ -68,10 +67,6 @@ char *coloris[]{ "Синий", "Красный" , "Зеленый" , "Желтый" };
 union charging {
 	int percent;
 	char *status = "Разряжен";
-	void news() {
-		percent = NULL;
-		status = NULL;
-	}
 };
 
 struct arsenal {
@@ -87,31 +82,34 @@ struct arsenal {
 	long long cost = 0;					// Стоимость (в рублях)
 	short shock = 0;					// Время шока (мс)
 	char owner[14] = "ВТК Диверсант";	// Имя владельца (ВТК Диверсант, если клубный)
-
-										/*ID					3
-										Название вооружения 20
-										Номер				6
-										Цвет				8
-										Урон				5
-										Здоровье			9
-										Время работы	    13
-										Статус акуумулятора	10
-										Стоимость		    10
-										Шок				    5
-										Имя владельца		14*/
-
 	arsenal *next;
-
-
-	void out()
-	{
-		if (what == 1) printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-2d%%       |%-9lld|%-4d|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, charge.percent, cost, shock, owner);
-		if (what == 2) printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-10s|%-9lld|%-4d|%-13s|\n", id, name, number, coloris[collor], damage, hp, runtime, charge.status, cost, shock, owner);
-	}
 };
 typedef arsenal *Pbd;
 
+/*ID					3
+Название вооружения 20
+Номер				6
+Цвет				8
+Урон				5
+Здоровье			9
+Время работы	    13
+Статус акуумулятора	10
+Стоимость		    10
+Шок				    5
+Имя владельца		14*/
+
 Pbd baza = NULL;
+
+void out(Pbd base)
+{
+	if (base->what == 1) printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-2d%%       |%-9lld|%-4d|%-13s|\n", base->id, base->name, base->number, coloris[base->collor], base->damage, base->hp, base->runtime, base->charge.percent, base->cost, base->shock, base->owner);
+	if (base->what == 2) printf("%-2d|%-19s|%-5d|%-7s|%-4d|%-8d|%-12.2f|%-10s|%-9lld|%-4d|%-13s|\n", base->id, base->name, base->number, coloris[base->collor], base->damage, base->hp, base->runtime, base->charge.status, base->cost, base->shock, base->owner);
+}
+
+void news(Pbd base) {
+	base->charge.percent = NULL;
+	base->charge.status = NULL;
+}
 
 void putID(Pbd &Head) {
 	Pbd q = Head;
@@ -182,7 +180,7 @@ void outs() {
 	Pbd base = baza;
 	printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 	while (base != NULL) {
-		base->out();
+		out(base);
 		base = base->next;
 	}
 }
@@ -265,7 +263,7 @@ void ins() {
 		s[0] = '\0'; gets_s(s, 999);
 		y = StrToInt(s);
 	}
-	one->charge.news();
+	news(one);
 	s[3] = '\0';
 	y = StrToInt(s);
 	if (y > 100) {
@@ -327,7 +325,7 @@ void inc() {
 	one->hp = 100;
 	one->number = 6;
 	one->runtime = 3.71;
-	one->charge.news();
+	news(one);
 	one->charge.percent = 89;
 	one->what = 1;
 	one->shock = 1000;
@@ -341,7 +339,7 @@ void inc() {
 	one->hp = 100;
 	one->number = 60;
 	one->runtime = 7.39;
-	one->charge.news();
+	news(one);
 	one->charge.status = "Заряжен";
 	one->what = 2;
 	one->shock = 1000;
@@ -394,7 +392,7 @@ void finds() {
 			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 			while (base != NULL) {
 				if (base->id == id) {
-					count++; base->out();
+					count++; out(base);
 				} base = base->next;
 			}
 			if (count == 0) printf("Элемент не найден.\n");
@@ -406,7 +404,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (myStrcmp(s, base->name)) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -426,7 +424,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->number == y) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -447,7 +445,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->collor == collor) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -467,7 +465,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->damage == y) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -487,7 +485,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->hp == y) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -506,7 +504,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->runtime == f) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -521,7 +519,7 @@ void finds() {
 			printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 			while (base != NULL) {
 				if ((base->what == 2) && myStrcmp(s, base->charge.status)) {
-					count++; base->out();
+					count++; out(base);
 				} base = base->next;
 			}
 			if (count == 0) printf("Элемент не найден.\n");
@@ -536,7 +534,7 @@ void finds() {
 				printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 				while (base != NULL) {
 					if ((base->what == 2) && myStrcmp(s, base->charge.status)) {
-						count++; base->out();
+						count++; out(base);
 					} base = base->next;
 				}
 				if (count == 0) printf("Элемент не найден.\n");
@@ -549,7 +547,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if ((base->what == 1) && (base->charge.percent == y)) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -570,7 +568,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->cost == y) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -590,7 +588,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (base->shock == y) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
@@ -602,7 +600,7 @@ void finds() {
 		printf("База данных:\nID|Название вооружения|Номер|Цвет   |Урон|Здоровье|Время работы|Батарея   |Стоимость|Шок |Имя владельца|\n");
 		while (base != NULL) {
 			if (myStrcmp(s, base->owner)) {
-				count++; base->out();
+				count++; out(base);
 			} base = base->next;
 		}
 		if (count == 0) printf("Элемент не найден.\n");
